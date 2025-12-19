@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.StudentMapper">
+    <insert id="insert">
+        insert into student(name,no,gender,phone,degree,clazz_id,id_card,is_college,address,graduation_date,create_time,update_time)
+        values(#{name},#{no},#{gender},#{phone},#{degree},#{clazzId},#{idCard},#{isCollege},#{address},#{graduationDate},#{createTime},#{updateTime})
+    </insert>
+    <update id="update">
+        update student set name=#{name},no=#{no},gender=#{gender},phone=#{phone},degree=#{degree},clazz_id=#{clazzId},id_card=#{idCard},is_college=#{isCollege},address=#{address},graduation_date=#{graduationDate},update_time=#{updateTime}
+        where id=#{id}
+    </update>
+    <delete id="deleteByIds">
+        delete from student where id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+    </delete>
+
+    <select id="getStudentInfo" resultType="com.itheima.pojo.Student">
+        select s.* , c.name as clazz_name from student s
+        left join clazz c on s.clazz_id=c.id
+        <where>
+            <if test="name!=null and name!=''">
+                s.name like concat('%',#{name},'%')
+            </if>
+            <if test="degree!=null">
+                and s.degree=#{degree}
+            </if>
+            <if test="clazzId!=null">
+                and s.clazz_id=#{clazzId}
+            </if>
+        </where>
+    </select>
+</mapper>
